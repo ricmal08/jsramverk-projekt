@@ -9,6 +9,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import documents from "./docs.mjs";
+import req from 'express/lib/request';
+import { runInNewContext } from 'vm';
 
 const app = express();
 
@@ -31,6 +33,25 @@ app.post("/", async (req, res) => {
     const result = await documents.addOne(req.body);
 
     return res.redirect(`/${result.lastID}`);
+});
+
+app.post("/update/:id", async (req, res) => {
+    // Try updating document
+    try {
+        const result = await documents.updateOne(req.params.id, req.body);
+
+        if (result) {
+            // if exist, redirect to show document
+            return res.redirect(`/${req.params.id}`);
+        } else {
+            // If not print error message
+            return res.status(500).send("Update failed");
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Database error during update");
+    }
+
 });
 
 app.get('/:id', async (req, res) => {
