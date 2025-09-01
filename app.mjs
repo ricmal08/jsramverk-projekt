@@ -51,6 +51,22 @@ app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
 });
 
+app.post('/update', async (req, res) => {
+    const { id, title, content } = req.body; // hämtar från request body
+
+    if (!id || !title || !content) { //kontroll
+        return res.status(400).json({ error: 'Missing Arguments, Please provide ID, Title and Content' });
+    }
+
+    try {
+        const result = await docs.updateOne(id, { title, content });
+
+        res.sendStatus(200);//OK
+    } catch (error) {
+        res.sendstatus(500);//Internal server error
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
