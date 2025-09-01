@@ -34,10 +34,17 @@ app.post("/", async (req, res) => {
 });
 
 app.get('/:id', async (req, res) => {
-    return res.render(
-        "doc",
-        { doc: await documents.getOne(req.params.id) }
-    );
+    // fetch doc and store in var doc
+    const doc = await documents.getOne(req.params.id);
+
+    // check
+    if (doc) {
+        // if exists, render doc
+        res.render("doc", { doc: doc });
+    } else {
+        // if !exists, print error messange
+        res.status(404).send("Document not found");
+    }
 });
 
 app.get('/', async (req, res) => {
@@ -45,5 +52,5 @@ app.get('/', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${port}`)
 });
