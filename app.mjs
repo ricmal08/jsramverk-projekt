@@ -72,6 +72,12 @@ app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
 });
 
+app.get('/create', async (req, res) => {
+    // Create a new document, render the form
+    // newDoc is set to True 
+    return res.render("doc", { doc: { title: "", content: ""}, newDoc: true});
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
