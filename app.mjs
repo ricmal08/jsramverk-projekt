@@ -60,8 +60,8 @@ app.get('/:id', async (req, res) => {
 
     // check
     if (doc) {
-        // if exists, render doc
-        res.render("doc", { doc: doc });
+        // if exists, render doc, set newDoc to false
+        res.render("doc", { doc: doc, newDoc: false });
     } else {
         // if !exists, print error messange
         res.status(404).send("Document not found");
