@@ -9,7 +9,6 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import documents from "./docs.mjs";
-import req from 'express/lib/request';
 import { runInNewContext } from 'vm';
 
 const app = express();
@@ -54,6 +53,13 @@ app.post("/update/:id", async (req, res) => {
 
 });
 
+app.get('/create', (req, res) => {
+    // skickar tomma värden
+    const doc = { title: '', content: '' };
+    // Rendera
+    res.render('doc', { doc: doc });
+});
+
 app.get('/:id', async (req, res) => {
     // fetch doc and store in var doc
     const doc = await documents.getOne(req.params.id);
@@ -72,6 +78,17 @@ app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
 });
 
+<<<<<<< Updated upstream
+=======
+//app.get('/create', async (req, res) => {
+    // Create a new document, render the form
+    // newDoc is set to True
+    //return res.render("doc", { doc: { title: "", content: ""}, newDoc: true});
+//});
+
+
+
+>>>>>>> Stashed changes
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
