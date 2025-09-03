@@ -60,8 +60,8 @@ app.get('/:id', async (req, res) => {
 
     // check
     if (doc) {
-        // if exists, render doc
-        res.render("doc", { doc: doc });
+        // if exists, render doc, set newDoc to false
+        res.render("doc", { doc: doc, newDoc: false });
     } else {
         // if !exists, print error messange
         res.status(404).send("Document not found");
@@ -70,6 +70,12 @@ app.get('/:id', async (req, res) => {
 
 app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
+});
+
+app.get('/create', async (req, res) => {
+    // Create a new document, render the form
+    // newDoc is set to True 
+    return res.render("doc", { doc: { title: "", content: ""}, newDoc: true});
 });
 
 app.listen(port, () => {
