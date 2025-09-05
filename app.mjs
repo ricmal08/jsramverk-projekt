@@ -9,8 +9,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import documents from "./docs.mjs";
-import req from 'express/lib/request';
-import { runInNewContext } from 'vm';
+
 
 const app = express();
 
@@ -29,10 +28,21 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/", async (req, res) => {
-    const result = await documents.addOne(req.body);
+app.post("/create", async (req, res) => {
+    try {
+        const result = await documents.addOne(req.body);
 
-    return res.redirect(`/${result.lastID}`);
+        // If result (succesful creation) and database generated ID to document, redirect
+        if (result && result.lastID) {
+            return res.redirect(`/${result.lastID}`);
+        } else {
+            return res.status(500).send("Failed to create new document");
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Failed to create new document");
+    }
 });
 
 app.post("/update/:id", async (req, res) => {
@@ -54,6 +64,17 @@ app.post("/update/:id", async (req, res) => {
 
 });
 
+
+app.get('/', async (req, res) => {
+    return res.render("index", { docs: await documents.getAll() });
+});
+
+app.get('/create', async (req, res) => {
+    // Create a new document, render the form
+    // newDoc is set to True 
+    return res.render("doc", { doc: { title: "", content: ""}, newDoc: true});
+});
+
 app.get('/:id', async (req, res) => {
     // fetch doc and store in var doc
     const doc = await documents.getOne(req.params.id);
@@ -66,16 +87,6 @@ app.get('/:id', async (req, res) => {
         // if !exists, print error messange
         res.status(404).send("Document not found");
     }
-});
-
-app.get('/', async (req, res) => {
-    return res.render("index", { docs: await documents.getAll() });
-});
-
-app.get('/create', async (req, res) => {
-    // Create a new document, render the form
-    // newDoc is set to True 
-    return res.render("doc", { doc: { title: "", content: ""}, newDoc: true});
 });
 
 app.listen(port, () => {
