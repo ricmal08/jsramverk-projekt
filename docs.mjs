@@ -19,7 +19,7 @@ const docs = {
         let db = await openDb();
 
         try {
-            return await db.get('SELECT * FROM documents WHERE rowid=?', id);
+            return await db.get('SELECT rowid as id, * FROM documents WHERE rowid=?', id);
         } catch (e) {
             console.error(e);
 

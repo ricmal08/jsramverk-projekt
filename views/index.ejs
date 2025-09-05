@@ -1,6 +1,16 @@
 <%- include('includes/header'); %>
-    <h2>Dokument</h2>
-    <% docs.forEach(function(doc){ %>
-        <h3><a href="/<%= doc.id %>"><%= doc.title %></a></h3>
-    <% }); %>
+    <div>
+        <h2>Dokument</h2>
+
+        <a href="/create" class="button">Skapa Nytt Dokument</a><hr>
+    </div>
+    <div>
+        <% if (docs.length > 0) { %>
+        <% docs.forEach(function(doc){ %>
+            <h3><a href="/<%= doc.id %>"><%= doc.title %></a></h3>
+        <% }); %>
+        <% } else { %>
+            <p>No files</p>
+        <% } %>
+    </div>
 <%- include('includes/footer'); %>
