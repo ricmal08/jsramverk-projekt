@@ -10,6 +10,7 @@ import cors from 'cors';
 
 import documents from "./docs.mjs";
 
+
 const app = express();
 
 app.disable('x-powered-by');
@@ -27,23 +28,67 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/", async (req, res) => {
-    const result = await documents.addOne(req.body);
+app.post("/create", async (req, res) => {
+    try {
+        const result = await documents.addOne(req.body);
 
-    return res.redirect(`/${result.lastID}`);
+        // If result (succesful creation) and database generated ID to document, redirect
+        if (result && result.lastID) {
+            return res.redirect(`/${result.lastID}`);
+        } else {
+            return res.status(500).send("Failed to create new document");
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Failed to create new document");
+    }
 });
 
-app.get('/:id', async (req, res) => {
-    return res.render(
-        "doc",
-        { doc: await documents.getOne(req.params.id) }
-    );
+app.post("/update/:id", async (req, res) => {
+    // Try updating document
+    try {
+        const result = await documents.updateOne(req.params.id, req.body);
+
+        if (result) {
+            // if exist, redirect to show document
+            return res.redirect(`/${req.params.id}`);
+        } else {
+            // If not print error message
+            return res.status(500).send("Update failed");
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Database error during update");
+    }
+
 });
+
 
 app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
 });
 
+app.get('/create', async (req, res) => {
+    // Create a new document, render the form
+    // newDoc is set to True 
+    return res.render("doc", { doc: { title: "", content: ""}, newDoc: true});
+});
+
+app.get('/:id', async (req, res) => {
+    // fetch doc and store in var doc
+    const doc = await documents.getOne(req.params.id);
+
+    // check
+    if (doc) {
+        // if exists, render doc, set newDoc to false
+        res.render("doc", { doc: doc, newDoc: false });
+    } else {
+        // if !exists, print error messange
+        res.status(404).send("Document not found");
+    }
+});
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${port}`)
 });
