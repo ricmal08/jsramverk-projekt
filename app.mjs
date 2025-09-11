@@ -1,8 +1,7 @@
 import 'dotenv/config'
-
-const port = process.env.PORT;
-
+//import indexRouter from './routes/index.js'
 import express from 'express';
+
 import bodyParser from 'body-parser';
 import path from 'path';
 import morgan from 'morgan';
@@ -10,7 +9,13 @@ import cors from 'cors';
 
 import documents from "./docs.mjs";
 
+const port = process.env.PORT || 1337;;
 const app = express();
+
+let dsn = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.jztcx09.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+//Middleware
+app.use(cors());
+app.use(morgan());
 
 app.disable('x-powered-by');
 
@@ -45,5 +50,5 @@ app.get('/', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${port}`)
 });

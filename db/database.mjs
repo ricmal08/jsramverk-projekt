@@ -14,5 +14,5 @@ async function openDb() {
     });
 }
 
-
+//mongodb+srv://ricmal_db_user:SrsO7dDouCan82L2@cluster0.jztcx09.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 export default openDb;
