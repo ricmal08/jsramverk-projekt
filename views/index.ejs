@@ -7,7 +7,7 @@
     <div>
         <% if (docs.length > 0) { %>
         <% docs.forEach(function(doc){ %>
-            <h3><a href="/<%= doc.id %>"><%= doc.title %></a></h3>
+            <h3><a href="/<%= doc._id %>"><%= doc.title %></a></h3>
         <% }); %>
         <% } else { %>
             <p>No files</p>
