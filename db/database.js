@@ -9,7 +9,7 @@ const collectionName = "documents"
 const database = {
     getDb: async function getDb() {
         let dsn = "mongodb://localhost:27017";
-        let dbName = "documents"
+        let dbName = "docs"
 
         if (process.env.NODE_ENV === 'test') {
             dbName = "test";
