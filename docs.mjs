@@ -40,18 +40,22 @@ const docs = {
     },
 
     addOne: async function addOne(body) {
-        let db = await openDb();
+        let db;
 
         try {
-            return await db.run(
-                'INSERT INTO documents (title, content) VALUES (?, ?)',
-                body.title,
-                body.content,
-            );
+            db = await database.getDb();
+
+            const result = await db.collection.insertOne({
+                title: body.title,
+                content: body.content
+            });
+
+            return result;
+           
         } catch (e) {
             console.error(e);
         } finally {
-            await db.close();
+            await db.client.close();
         }
     },
 
