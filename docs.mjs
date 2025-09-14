@@ -27,7 +27,7 @@ const docs = {
         try {
             db = await database.getDb();
 
-            const result = await db.collection.findOne({ _id: ObjectId(id) });
+            const result = await db.collection.findOne({ _id: new ObjectId(id) });
             return result;
         } catch (e) {
             console.error(e);
@@ -64,7 +64,7 @@ const docs = {
         try {
             db = await database.getDb();
 
-            const filter = { _id: ObjectId(id) };
+            const filter = { _id: new ObjectId(id) };
 
             const updateDoc = {
                 $set: {
