@@ -33,8 +33,8 @@ app.post("/create", async (req, res) => {
         const result = await documents.addOne(req.body);
 
         // If result (succesful creation) and database generated ID to document, redirect
-        if (result && result.lastID) {
-            return res.redirect(`/${result.lastID}`);
+        if (result && result.insertedId) {
+            return res.redirect(`/${result.insertedId}`);
         } else {
             return res.status(500).send("Failed to create new document");
         }
