@@ -1,15 +1,11 @@
-import openDb from './db/database.mjs';
 import database from './db/database.js';
 import { ObjectId } from 'mongodb';
 
 const docs = {
     getAll: async function getAll() {
-        // let db = await openDb();
         let db;
 
         try {
-            // return await db.all('SELECT rowid as id, * FROM documents');
-
             db = await database.getDb();
 
             const result = await db.collection.find({}).toArray();
@@ -21,7 +17,6 @@ const docs = {
 
             return [];
         } finally {
-            // await db.close();
             await db.client.close();
         }
     },
@@ -64,19 +59,27 @@ const docs = {
     },
 
     updateOne: async function updateOne(id, body) {
-        let db = await openDb();
+        let db;
 
         try {
-            return await db.run(
-                'UPDATE documents SET title=?, content=? WHERE rowid=?',
-                body.title,
-                body.content,
-                id
-            );
+            db = await database.getDb();
+
+            const filter = { _id: ObjectId(id) };
+
+            const updateDoc = {
+                $set: {
+                    title: body.title,
+                    content: body.content
+                }
+            };
+
+            const result = await db.collection.updateOne(filter, updateDoc);
+
+            return result;
         } catch (e) {
             console.error(e);
         } finally {
-            await db.close();
+            await db.client.close();
         }
     }
 };
